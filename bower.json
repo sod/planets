@@ -1,0 +1,19 @@
+{
+  "name": "planets",
+  "version": "0.0.0",
+  "authors": [
+    "Alexander von Weiss <alexvonweiss@googlemail.com>"
+  ],
+  "description": "Planetary Multiplayer Game",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "pixi.js": "~3.0.6"
+  }
+}
