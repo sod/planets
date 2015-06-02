@@ -2,7 +2,7 @@
   "name": "planets",
   "version": "0.0.0",
   "authors": [
-    "Alexander von Weiss <alexvonweiss@googlemail.com>"
+    "Alexander von Weiss <alexvonweiss@googlemail.com> (https://github.com/sod)"
   ],
   "description": "Planetary Multiplayer Game",
   "license": "MIT",
@@ -14,6 +14,7 @@
     "tests"
   ],
   "dependencies": {
-    "pixi.js": "~3.0.6"
+    "pixi.js": "~3.0.6",
+    "requirejs": "~2.1.18"
   }
 }

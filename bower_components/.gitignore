@@ -1,0 +1,13 @@
+# ignore everything
+*
+
+# whitelist all directories - directories do not become automatically
+# commited, but now we can whitelist files in any subdirectory below
+!*/
+
+# only keep the files we need to `grunt build` so we do not depend
+# on bower install / github availability
+!/.gitignore
+
+!pixi.js/bin/*
+!requirejs/require.js

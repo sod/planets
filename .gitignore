@@ -1,4 +1,4 @@
-bower_components
+node_modules
 
 # only ignore dynamic files described in https://intellij-support.jetbrains.com/entries/23393067
 .idea/dictionaries
