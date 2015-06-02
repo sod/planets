@@ -9,10 +9,10 @@ requirejs.config({
 define([
 	'pixijs',
 	'pixi/entity/player',
-	'pixi/entity/enemy',
+	'pixi/behaviour/controllable',
 	'pixi/event',
 	'pixi/collision'
-], function(PIXI, playerEntity, enemyEntity, event, collision) {
+], function(PIXI, playerEntity, controllable, event, collision) {
 
 	/**
 	 * @returns {HTMLElement}
@@ -22,6 +22,7 @@ define([
 	}
 
 	window.x = getDomContainer();
+	window.collision = collision;
 
 	/**
 	 * @param {HTMLElement} element
@@ -53,14 +54,23 @@ define([
 	var stage = new PIXI.Container();
 	var entities = [];
 
+	window.entities = entities;
+
 	// add player
 	var player = playerEntity.create();
+	player.setColor(0x0074D9);
+	player.setRadius(100);
+	player.setName('Player');
+	controllable(player);
 	entities.push(player);
 	stage.addChild(player);
 
 	// add enemies for testing
-	[1,2].forEach(function() {
-		var enemy = enemyEntity.create();
+	Array.apply(null, Array(3)).forEach(function(number, index) {
+		var enemy = playerEntity.create();
+		enemy.setColor(0xFF4136);
+		enemy.setRadius(35);
+		enemy.setName('Enemy ' + (index + 1));
 		entities.push(enemy);
 		stage.addChild(enemy);
 	});
@@ -75,7 +85,9 @@ define([
 		event.emit(entities, 'tick');
 		//console.timeEnd('tick');
 
-		//collision.testEach(entitiesContainer);
+		//console.time('collision');
+		collision.testEach(entities);
+		//console.timeEnd('collision');
 
 		//console.time('render');
 		renderer.render(stage);

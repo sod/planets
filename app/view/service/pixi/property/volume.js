@@ -1,18 +1,21 @@
 define(function() {
-	function Volume(start, min, max) {
-		this.radius = start;
+	function Volume(radius, min, max) {
+		var instance = this;
 
-		this.min = min;
-		this.max = max;
+		this.radius = radius;
+
+		this.setRadius = function(radius) {
+			instance.radius = radius;
+		};
+
+		this.increase = function() {
+			instance.radius = Math.min(instance.radius + 1, max);
+		};
+
+		this.decrease = function() {
+			instance.radius = Math.max(instance.radius - 1, min);
+		};
 	}
-
-	Volume.prototype.increase = function() {
-		this.radius = Math.min(this.radius + 1, this.max);
-	};
-
-	Volume.prototype.decrease = function() {
-		this.radius = Math.max(this.radius - 1, this.min);
-	};
 
 	return Volume;
 });

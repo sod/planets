@@ -1,62 +1,35 @@
 define([
 	'pixijs',
 	'pixi/text',
-	'service/keyboard',
-	'pixi/property/acceleration',
-	'pixi/property/volume',
-	'pixi/collision'
-], function(PIXI, text, keyboard, Acceleration, Volume, collision) {
+	'pixi/circle',
+	'pixi/property/volume'
+], function(PIXI, text, Circle, Volume) {
 	var player = {};
 
 	player.create = function() {
-		var directions = [
-			'left',
-			'up',
-			'right',
-			'down'
-		];
-
-		function setRadius(radius) {
-			circle.clear();
-			circle.beginFill(0x0074D9);
-			circle.drawCircle(0, 0, radius);
-		}
-
 		var playerEntity = new PIXI.Container();
-		var acceleration = playerEntity.acceleration = new Acceleration(4, 0.02);
-		var volume = playerEntity.volume = new Volume(100, 1, 500);
+		var volume = playerEntity.volume = new Volume(0, 1, 500);
 
-		playerEntity.x = 200;
-		playerEntity.y = 200;
+		playerEntity.x = (Math.random() * 500) + 100;
+		playerEntity.y = (Math.random() * 500) + 100;
 
-		var circle = new PIXI.Graphics();
-		setRadius(volume.radius);
+		var name = text.getCentered();
+		var circle = new Circle();
 
-		var name = text.getCentered('Player');
-		window.n = name;
+		playerEntity.setColor = circle.setColor;
+		playerEntity.setRadius = volume.setRadius;
+		playerEntity.setName = name.setText;
+		playerEntity.destroy = function() {
+			playerEntity.destroyed = true;
+		};
 
-		circle.addChild(name);
-		playerEntity.addChild(circle);
+		circle.graphics.addChild(name);
+		playerEntity.addChild(circle.graphics);
 
 		playerEntity.on('tick', function() {
-			acceleration.decrease();
-			//volume.increase();
-
-			setRadius(volume.radius);
-
-			directions.forEach(function(key) {
-				if(keyboard.state[key]) {
-					acceleration.increase(key);
-					acceleration.increase(key);
-				}
-			});
-
-			playerEntity.x += acceleration.getX();
-			playerEntity.y += acceleration.getY();
-			name.text = playerEntity.x.toFixed(2) + ' x ' + playerEntity.y.toFixed(2);
+			circle.setRadius(volume.radius);
+			circle.draw();
 		});
-
-		window.p = playerEntity;
 
 		return playerEntity;
 	};
