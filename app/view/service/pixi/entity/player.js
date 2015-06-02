@@ -21,6 +21,7 @@ define([
 		playerEntity.setName = name.setText;
 		playerEntity.destroy = function() {
 			playerEntity.destroyed = true;
+			name.setText(' ')
 		};
 
 		circle.graphics.addChild(name);

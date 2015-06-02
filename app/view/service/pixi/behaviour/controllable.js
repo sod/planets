@@ -2,22 +2,14 @@ define([
 	'service/keyboard',
 	'pixi/property/acceleration'
 ], function(keyboard, Acceleration) {
-	var directions = [
-		'left',
-		'up',
-		'right',
-		'down'
-	];
-
 	return function(entity) {
 		var acceleration = new Acceleration(4, 0.02);
 
 		entity.on('tick', function() {
 			acceleration.decrease();
-			directions.forEach(function(key) {
+			Acceleration.directions.forEach(function(key) {
 				if(keyboard.state[key]) {
-					acceleration.increase(key);
-					acceleration.increase(key);
+					acceleration.increase(key, 2);
 				}
 			});
 

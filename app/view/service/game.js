@@ -10,9 +10,10 @@ define([
 	'pixijs',
 	'pixi/entity/player',
 	'pixi/behaviour/controllable',
+	'pixi/behaviour/camera',
 	'pixi/event',
 	'pixi/collision'
-], function(PIXI, playerEntity, controllable, event, collision) {
+], function(PIXI, playerEntity, controllable, Camera, event, collision) {
 
 	/**
 	 * @returns {HTMLElement}
@@ -20,9 +21,6 @@ define([
 	function getDomContainer() {
 		return document.getElementById('game');
 	}
-
-	window.x = getDomContainer();
-	window.collision = collision;
 
 	/**
 	 * @param {HTMLElement} element
@@ -33,12 +31,15 @@ define([
 	}
 
 	/**
-	 * @param {PIXI.WebGLRenderer} renderer
+	 * @param {PIXI.WebGLRenderer|module.exports.autoDetectRenderer} renderer
 	 * @param {HTMLElement} element
+	 * @param {PIXI.Container} canvas
 	 */
-	function resize(renderer, element) {
+	function resize(renderer, element, canvas) {
 		var rects = getClientRects(element);
 		renderer.resize(rects.width, rects.height);
+		canvas.pivot.x = -(rects.width / 2);
+		canvas.pivot.y = -(rects.height / 2);
 	}
 
 	var renderer = new PIXI.autoDetectRenderer(0, 0, {
@@ -46,15 +47,12 @@ define([
 		antialias: true
 	});
 
-	resize(renderer, getDomContainer());
-	window.addEventListener('resize', resize.bind(null, renderer, getDomContainer()));
-
 	document.getElementById('game').appendChild(renderer.view);
 
+	var canvas = new PIXI.Container();
 	var stage = new PIXI.Container();
+	canvas.addChild(stage);
 	var entities = [];
-
-	window.entities = entities;
 
 	// add player
 	var player = playerEntity.create();
@@ -62,6 +60,7 @@ define([
 	player.setRadius(100);
 	player.setName('Player');
 	controllable(player);
+	var camera = new Camera(stage, player);
 	entities.push(player);
 	stage.addChild(player);
 
@@ -75,6 +74,9 @@ define([
 		stage.addChild(enemy);
 	});
 
+	resize(renderer, getDomContainer(), canvas);
+	window.addEventListener('resize', resize.bind(null, renderer, getDomContainer(), canvas));
+
 	// kick off the animation loop (defined below)
 	animate();
 
@@ -83,6 +85,7 @@ define([
 
 		//console.time('tick');
 		event.emit(entities, 'tick');
+		camera.tick();
 		//console.timeEnd('tick');
 
 		//console.time('collision');
@@ -90,9 +93,14 @@ define([
 		//console.timeEnd('collision');
 
 		//console.time('render');
-		renderer.render(stage);
+		renderer.render(canvas);
 		//console.timeEnd('render');
 	}
 
-	return 1;
+	window.x = getDomContainer();
+	window.collision = collision;
+	window.renderer = renderer;
+	window.stage = stage;
+	window.camera = camera;
+	window.entities = entities;
 });
