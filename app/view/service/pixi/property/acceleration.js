@@ -14,6 +14,8 @@ define(function() {
 		this.right = 0;
 		this.down = 0;
 
+		this.max = max;
+
 		/**
 		 * increase acceleration
 		 * @param {'left'|'up'|'right'|'down'} direction

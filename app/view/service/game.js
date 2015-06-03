@@ -1,19 +1,21 @@
 requirejs.config({
 	paths: {
-		pixijs: "/pixi.js/bin/pixi",
-		pixi: "/service/pixi",
-		service: "/service"
+		PIXI: '/pixi.js/bin/pixi',
+		TWEEN: '/tweenjs/src/Tween',
+		pixi: '/service/pixi',
+		service: '/service'
 	}
 });
 
 define([
-	'pixijs',
+	'PIXI',
+	'TWEEN',
 	'pixi/entity/player',
-	'pixi/behaviour/controllable',
-	'pixi/behaviour/camera',
-	'pixi/event',
-	'pixi/collision'
-], function(PIXI, playerEntity, controllable, Camera, event, collision) {
+	'pixi/behaviour/controllable/byKeyboard',
+	'pixi/behaviour/camera/follow',
+	'pixi/behaviour/camera/zoom',
+	'pixi/manager/collision'
+], function(PIXI, TWEEN, playerEntity, InputByKeyboard, CameraFollow, CameraZoom, CollisionManager) {
 
 	/**
 	 * @returns {HTMLElement}
@@ -52,16 +54,12 @@ define([
 	var canvas = new PIXI.Container();
 	var stage = new PIXI.Container();
 	canvas.addChild(stage);
-	var entities = [];
 
 	// add player
 	var player = playerEntity.create();
 	player.setColor(0x0074D9);
 	player.setRadius(100);
 	player.setName('Player');
-	controllable(player);
-	var camera = new Camera(stage, player);
-	entities.push(player);
 	stage.addChild(player);
 
 	// add enemies for testing
@@ -70,37 +68,29 @@ define([
 		enemy.setColor(0xFF4136);
 		enemy.setRadius(35);
 		enemy.setName('Enemy ' + (index + 1));
-		entities.push(enemy);
 		stage.addChild(enemy);
 	});
 
 	resize(renderer, getDomContainer(), canvas);
 	window.addEventListener('resize', resize.bind(null, renderer, getDomContainer(), canvas));
 
-	// kick off the animation loop (defined below)
-	animate();
+	var ticker = PIXI.ticker.shared;
 
-	function animate() {
-		requestAnimationFrame(animate);
+	// add behaviour
+	ticker.add((new InputByKeyboard(player)).tick);
+	ticker.add((new CameraFollow(stage, player)).tick);
+	ticker.add((new CameraZoom(stage, player.acceleration)).tick);
+	ticker.add((new CollisionManager(stage.children)).tick);
 
-		//console.time('tick');
-		event.emit(entities, 'tick');
-		camera.tick();
-		//console.timeEnd('tick');
+	ticker.add(function(time) {
+		stage.children.forEach(function(entity) {
+			entity.tick(time);
+		});
+	});
 
-		//console.time('collision');
-		collision.testEach(entities);
-		//console.timeEnd('collision');
-
-		//console.time('render');
-		renderer.render(canvas);
-		//console.timeEnd('render');
-	}
+	ticker.add(renderer.render.bind(renderer, canvas));
 
 	window.x = getDomContainer();
-	window.collision = collision;
 	window.renderer = renderer;
 	window.stage = stage;
-	window.camera = camera;
-	window.entities = entities;
 });

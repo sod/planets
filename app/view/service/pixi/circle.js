@@ -1,4 +1,4 @@
-define(['pixijs'], function(PIXI) {
+define(['PIXI'], function(PIXI) {
 	var noop = function() {}
 
 	function Circle() {

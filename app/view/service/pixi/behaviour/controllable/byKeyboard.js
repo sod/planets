@@ -1,11 +1,11 @@
 define([
-	'service/keyboard',
+	'service/input/keyboard',
 	'pixi/property/acceleration'
 ], function(keyboard, Acceleration) {
-	return function(entity) {
-		var acceleration = new Acceleration(4, 0.02);
+	function InputByKeyboard(entity) {
+		var acceleration = entity.acceleration = new Acceleration(4, 0.02);
 
-		entity.on('tick', function() {
+		this.tick = function InputByKeyboardTick() {
 			acceleration.decrease();
 			Acceleration.directions.forEach(function(key) {
 				if(keyboard.state[key]) {
@@ -15,11 +15,8 @@ define([
 
 			entity.x += acceleration.getX();
 			entity.y += acceleration.getY();
-			//name.text = [
-			//	'x: ' + entity.x.toFixed(2),
-			//	'y: ' + entity.y.toFixed(2),
-			//	'z: ' + entity.volume.radius.toFixed(2),
-			//].join('\n');
-		})
+		};
 	}
+
+	return InputByKeyboard;
 });

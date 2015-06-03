@@ -1,5 +1,5 @@
 define([
-	'pixijs',
+	'PIXI',
 	'pixi/text',
 	'pixi/circle',
 	'pixi/property/volume'
@@ -21,16 +21,16 @@ define([
 		playerEntity.setName = name.setText;
 		playerEntity.destroy = function() {
 			playerEntity.destroyed = true;
-			name.setText(' ')
+			playerEntity.parent.removeChild(playerEntity);
 		};
 
 		circle.graphics.addChild(name);
 		playerEntity.addChild(circle.graphics);
 
-		playerEntity.on('tick', function() {
+		playerEntity.tick = function PlayerEntityTick() {
 			circle.setRadius(volume.radius);
 			circle.draw();
-		});
+		};
 
 		return playerEntity;
 	};
