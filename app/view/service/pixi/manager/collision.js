@@ -2,12 +2,6 @@ define(function() {
 	function CollisionManager(entities) {
 		var instance = this;
 
-		this.tickMeasure = function(time) {
-			console.time('CollisionManagerTick');
-			instance.tick(time);
-			console.timeEnd('CollisionManagerTick');
-		};
-
 		this.tick = function CollisionManagerTick() {
 			var entity1;
 			var entity2;

@@ -10,12 +10,13 @@ requirejs.config({
 define([
 	'PIXI',
 	'TWEEN',
+	'service/debug',
 	'pixi/entity/player',
 	'pixi/behaviour/controllable/byKeyboard',
 	'pixi/behaviour/camera/follow',
 	'pixi/behaviour/camera/zoom',
 	'pixi/manager/collision'
-], function(PIXI, TWEEN, playerEntity, InputByKeyboard, CameraFollow, CameraZoom, CollisionManager) {
+], function(PIXI, TWEEN, debug, playerEntity, InputByKeyboard, CameraFollow, CameraZoom, CollisionManager) {
 
 	/**
 	 * @returns {HTMLElement}
@@ -63,10 +64,11 @@ define([
 	stage.addChild(player);
 
 	// add enemies for testing
-	Array.apply(null, Array(3)).forEach(function(number, index) {
+	Array.apply(null, Array(600)).forEach(function(number, index) {
 		var enemy = playerEntity.create();
 		enemy.setColor(0xFF4136);
 		enemy.setRadius(35);
+		enemy.x = 71 * index;
 		enemy.setName('Enemy ' + (index + 1));
 		stage.addChild(enemy);
 	});
@@ -74,13 +76,15 @@ define([
 	resize(renderer, getDomContainer(), canvas);
 	window.addEventListener('resize', resize.bind(null, renderer, getDomContainer(), canvas));
 
+	debug.activate();
+
 	var ticker = PIXI.ticker.shared;
 
 	// add behaviour
 	ticker.add((new InputByKeyboard(player)).tick);
 	ticker.add((new CameraFollow(stage, player)).tick);
 	ticker.add((new CameraZoom(stage, player.acceleration)).tick);
-	ticker.add((new CollisionManager(stage.children)).tick);
+	ticker.add(debug.measure((new CollisionManager(stage.children)).tick));
 
 	ticker.add(function(time) {
 		stage.children.forEach(function(entity) {
