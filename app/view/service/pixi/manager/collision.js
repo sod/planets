@@ -1,21 +1,38 @@
-define(function() {
-	function CollisionManager(entities) {
+define([
+	'quadtree'
+], function(/*quadtree-js not amd compliant*/nil) {
+	var concat = Array.prototype.concat;
+
+	/**
+	 * @param {PIXI.Container|{getBounds: Function}} stage
+	 * @param {PIXI.Container[]} entities
+	 * @constructor
+	 */
+	function CollisionManager(stage, entities) {
 		var instance = this;
+		var minRadiusBeforeTotalConsumption = 2;
 
 		this.tick = function CollisionManagerTick() {
-			var entity1;
-			var entity2;
+			var array = concat.apply([], entities);
 
-			entities = entities.filter(function(entity) {
-				return !entity.destroyed;
+			var quadtree = new Quadtree(stage.getBounds());
+			array.forEach(function(entity) {
+				var bounds = entity.getBounds();
+				bounds.entity = entity;
+				quadtree.insert(bounds);
 			});
 
-			for(entity1 = 0; entity1 < entities.length; entity1 += 1) {
-				for(entity2 = entity1 + 1; entity2 < entities.length; entity2 += 1) {
-					while(instance.getDistanceBetweenCircles(entities[entity1], entities[entity2]) > 0
-					&& !instance.resolve(entities[entity1], entities[entity2])) {}
+			array.forEach(function(entity1) {
+				var index;
+				var entity2;
+				var bounds2 = quadtree.retrieve(entity1.getBounds());
+				for(index = 0; index < bounds2.length; index += 1) {
+					entity2 = bounds2[index].entity;
+					if(entity1 !== entity2 && instance.getDistanceBetweenCircles(entity1, entity2) > 0) {
+						instance.resolve(entity1, entity2);
+					}
 				}
-			}
+			});
 		};
 
 		/**
@@ -34,48 +51,40 @@ define(function() {
 		};
 
 		/**
-		 * @param {Player|PIXI.Container} entity1
-		 * @param {Player|PIXI.Container} entity2
-		 * @returns {boolean}
+		 * @param {Player|{radius: Number, destroyed: bool}} entity1
+		 * @param {Player|{radius: Number, destroyed: bool}} entity2
 		 */
 		this.resolve = function(entity1, entity2) {
-			var entity1wins = entity1.volume.radius > entity2.volume.radius;
+			var entity1wins = entity1.radius > entity2.radius;
 			var winner = entity1wins ? entity1 : entity2;
 			var loser = entity1wins ? entity2 : entity1;
 			var crossover;
 			var transfer;
 
 			if(loser.destroyed) {
-				return true;
+				return;
 			}
 
-			crossover = Math.min(loser.volume.radius, Math.abs(this.getDistanceBetweenCircles(entity1, entity2)));
-			transfer = this.getRadiusTransfer(loser.volume.radius, winner.volume.radius, crossover);
+			crossover = loser.radius < minRadiusBeforeTotalConsumption ? loser.radius : Math.min(loser.radius, Math.abs(this.getDistanceBetweenCircles(entity1, entity2)));
+			transfer = this.getRadiusTransfer(loser.radius, winner.radius, crossover);
 
-			winner.volume.radius += transfer;
-			loser.volume.radius = Math.max(loser.volume.radius - (crossover + transfer), 0);
+			winner.setRadius(winner.radius + transfer);
+			loser.setRadius(Math.max(loser.radius - (crossover + transfer), 0));
 
-			if(loser.volume.radius <= 0) {
+			if(loser.radius <= minRadiusBeforeTotalConsumption) {
 				loser.destroy();
-				return true;
 			}
-
-			return false;
 		};
 
 		/**
 		 * @see http://stackoverflow.com/a/1736815
-		 * @param {Enemy|Player|{volume: Volume, x: Number, y: Number}} entity1
-		 * @param {Enemy|Player|{volume: Volume, x: Number, y: Number}} entity2
+		 * @param {Enemy|Player|{radius: Number, x: Number, y: Number}} entity1
+		 * @param {Enemy|Player|{radius: Number, x: Number, y: Number}} entity2
 		 * @returns {Number} (Negative value = they collide by n length, Positive value = they are apart by n length)
 		 */
 		this.getDistanceBetweenCircles = function(entity1, entity2) {
-			var x1 = entity1.x;
-			var y1 = entity1.y;
-			var x2 = entity2.x;
-			var y2 = entity2.y;
-			var collisionDistance = entity1.volume.radius + entity2.volume.radius;
-			var actualDistance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+			var collisionDistance = entity1.radius + entity2.radius;
+			var actualDistance = Math.sqrt(Math.pow(entity2.x - entity1.x, 2) + Math.pow(entity2.y - entity1.y, 2));
 			return collisionDistance - actualDistance;
 		};
 	}
