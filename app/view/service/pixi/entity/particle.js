@@ -2,6 +2,8 @@ define([
 	'PIXI'
 ], function(PIXI) {
 
+	PIXI.loader.add('particle', '/image/particle.png');
+
 	/**
 	 * @param {Number} x
 	 * @param {Number} y

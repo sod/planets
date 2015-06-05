@@ -4,9 +4,16 @@ define(['PIXI'], function(PIXI) {
 	text.getCentered = function() {
 		var textEntity = new PIXI.Text('');
 		textEntity.anchor.x = textEntity.anchor.y = .5;
-		textEntity.style.font = 'bold 15px Arial';
-		textEntity.style.fill = 0x222222;
+		textEntity.style.font = 'bold 14px Arial';
+		textEntity.style.fill = 'white';
+		textEntity.style.dropShadow = true;
+		textEntity.style.dropShadowDistance = 1;
+		textEntity.resolution = 2;
+		window.text = textEntity;
 
+		/**
+		 * @param {String}  text
+		 */
 		textEntity.setText = function(text) {
 			textEntity.text = text;
 		};
