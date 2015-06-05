@@ -59,8 +59,8 @@ define([
 		ticker.add(new CameraFollow(stage, player));
 		ticker.add(new CameraZoom(stage, player.acceleration));
 
-		ticker.add(renderer);
 		ticker.addPerSecond(30, new CollisionManager(stage, [players.children, particles.children]));
+		ticker.add(renderer);
 
 		// add fake enemies
 		Array.apply(null, Array(100)).forEach(function(number, index) {
