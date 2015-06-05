@@ -13,3 +13,4 @@
 !requirejs/require.js
 !tweenjs/build/*.js
 !tweenjs/src/*.js
+!quadtree-js/quadtree*js

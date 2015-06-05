@@ -16,6 +16,7 @@
   "dependencies": {
     "pixi.js": "~3.0.6",
     "requirejs": "~2.1.18",
-    "tweenjs": "*"
+    "tweenjs": "*",
+    "quadtree-js": "https://github.com/timohausmann/quadtree-js.git#master"
   }
 }
