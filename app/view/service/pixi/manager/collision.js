@@ -5,18 +5,21 @@ define([
 
 	/**
 	 * @param {PIXI.Container|{getBounds: Function}} stage
-	 * @param {PIXI.Container[]} entities
+	 * @param {PIXI.Container[]} [entities]
+	 * @param {PIXI.Container[]} [ghostEntities] - detect collision with entities, but not with ghostEntities itself
 	 * @constructor
 	 */
-	function CollisionManager(stage, entities) {
+	function CollisionManager(stage, entities, ghostEntities) {
 		var instance = this;
 		var minRadiusBeforeTotalConsumption = 2;
 
 		this.tick = function CollisionManagerTick() {
-			var array = concat.apply([], entities);
+			var array = concat.apply([], (entities || []));
+			var ghostArray = concat.apply([], (ghostEntities || []));
 
 			var quadtree = new Quadtree(stage.getBounds());
-			array.forEach(function(entity) {
+
+			array.concat(ghostArray).forEach(function(entity) {
 				var bounds = entity.getBounds();
 				bounds.entity = entity;
 				quadtree.insert(bounds);

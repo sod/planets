@@ -6,6 +6,8 @@ define([
 	var ticker = PIXI.ticker.shared;
 	var add = ticker.add.bind(ticker);
 
+	ticker.autoStart = false;
+
 	/**
 	 * @param {Function|{tick: Function}} fn
 	 * @returns {Function}

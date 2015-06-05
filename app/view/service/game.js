@@ -60,8 +60,8 @@ define([
 		ticker.add(new CameraFollow(stage, player));
 		ticker.add(new CameraZoom(stage, player.acceleration));
 
-		ticker.addPerSecond(30, new CollisionManager(stage, [players.children, particles.children]));
 		ticker.add(renderer);
+		ticker.add(new CollisionManager(stage, [players.children], [particles.children]));
 
 		// add fake enemies
 		Array.apply(null, Array(100)).forEach(function(number, index) {
@@ -72,7 +72,7 @@ define([
 		});
 
 		// add fake particles
-		Array.apply(null, Array(1000)).forEach(function(number, index) {
+		Array.apply(null, Array(5000)).forEach(function(number, index) {
 			var particle = new Particle(21 * index, getRandomPosition(5000), 10);
 			particles.addChild(particle);
 		});
@@ -82,9 +82,12 @@ define([
 		window.stage = stage;
 		window.particles = particles;
 		window.players = players;
+
+		// start ticker
+		ticker.start();
+		renderer.setDomContainer(document.getElementById('game'));
 	}
 
-	renderer.setDomContainer(document.getElementById('game'));
 	PIXI.loader.add('background1', '/image/background1.png');
 	PIXI.loader.add('background2', '/image/background2.png');
 	PIXI.loader.load(start);
