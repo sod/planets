@@ -2,8 +2,7 @@ define([
 	'PIXI',
 	'pixi/text',
 	'pixi/circle',
-	'pixi/property/volume'
-], function(PIXI, text, Circle, Volume) {
+], function(PIXI, text, Circle) {
 	var player = {};
 
 	player.create = function() {
