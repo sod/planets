@@ -34,11 +34,12 @@ define([
 
 	function start() {
 		var stage = new PIXI.Container();
+		var container = renderer.container;
 		var background1 = Parallax.extend(new Background(PIXI.loader.resources.background1.texture), stage, 8);
 		var background2 = Parallax.extend(new Background(PIXI.loader.resources.background2.texture), stage, 7);
-		renderer.container.addChild(background1);
-		renderer.container.addChild(background2);
-		renderer.container.addChild(stage);
+		container.addChild(background1);
+		container.addChild(background2);
+		container.addChild(stage);
 
 		var players = new PIXI.Container();
 		var particles = new PIXI.Container();
