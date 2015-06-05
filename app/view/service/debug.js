@@ -6,6 +6,8 @@ define(function() {
 	var active = false;
 	var uniqueId = -1;
 	var interval = 1000;
+	var intervalId;
+	var threshold = 0;
 
 	/**
 	 *
@@ -14,9 +16,16 @@ define(function() {
 		names.forEach(function(name, index) {
 			var call = (calls[index] || 0);
 			var time = (times[index] || 0);
-			var median = time / call;
+			var median = (time / call) || 0;
 			var percent = (time / interval * 100);
-			console.log(name, '[' + call + 'x]', '[' + time.toFixed(2) + 'ms]', '[~' + median.toFixed(2) + 'ms]', '[' + percent.toFixed(2) + '%]');
+			if(percent < threshold) {
+				return;
+			}
+			if(call === 0) {
+				console.log(name, '[' + call + 'x]');
+			} else {
+				console.log(name, '[' + call + 'x]', '[' + time.toFixed(2) + 'ms]', '[~' + median.toFixed(2) + 'ms]', '[' + percent.toFixed(2) + '%]');
+			}
 		});
 		times.length = calls.length = 0;
 	};
@@ -24,12 +33,40 @@ define(function() {
 	/**
 	 * activate debugging
 	 */
-	debug.activate = function() {
+	debug.start = function() {
+		debug.stop();
 		if(window.console) {
 			active = true;
 			console.log('Name', '[Calls]', '[Time in ms]', '[Median Time per call in ms]', '[Time usage in %]');
-			setInterval(printStats, interval);
+			intervalId = setInterval(printStats, interval);
 		}
+	};
+
+	/**
+	 * @param {Number} percent - threshold to show timings if execution time second was greater than `percent`
+	 */
+	debug.setThreshold = function(percent) {
+		threshold = percent;
+		return debug;
+	};
+
+	/**
+	 * print one debugging stat
+	 */
+	debug.once = function() {
+		debug.stop();
+		if(window.console) {
+			active = true;
+			console.log('Name', '[Calls]', '[Time in ms]', '[Median Time per call in ms]', '[Time usage in %]');
+			intervalId = setTimeout(printStats, interval);
+		}
+	};
+
+	/**
+	 * stop printing debug messages
+	 */
+	debug.stop = function() {
+		clearInterval(intervalId);
 	};
 
 	/**
@@ -50,7 +87,7 @@ define(function() {
 		fn.measure = function() {
 			if(id === -1) {
 				id = uniqueId += 1;
-				names[id] = fn.name || '<anonymous>';
+				names[id] = fn.name || (fn.constructor && fn.constructor.name) || '<anonymous>';
 			}
 			var time = performance.now();
 			var result = fn.apply(this, arguments);
