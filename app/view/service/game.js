@@ -35,7 +35,7 @@ define([
 	function start() {
 		var stage = new PIXI.Container();
 		var background1 = Parallax.extend(new Background(PIXI.loader.resources.background1.texture), stage, 8);
-		var background2 = Parallax.extend(new Background(PIXI.loader.resources.background2.texture), stage, 6);
+		var background2 = Parallax.extend(new Background(PIXI.loader.resources.background2.texture), stage, 7);
 		renderer.container.addChild(background1);
 		renderer.container.addChild(background2);
 		renderer.container.addChild(stage);
