@@ -1,4 +1,7 @@
-define(['TWEEN'], function(TWEEN) {
+define([
+	'TWEEN',
+	'pixi/ticker'
+], function(TWEEN, ticker) {
 	/**
 	 * @param {PIXI.Container|Container} stage
 	 * @param {Acceleration} acceleration
@@ -16,14 +19,21 @@ define(['TWEEN'], function(TWEEN) {
 		/**
 		 * call on each animation cycle
 		 */
-		this.tick = function CameraZoomTick(time) {
+		this.tick = function CameraZoomTick() {
+			var time = PIXI.ticker.shared.lastTime;
 			var speed = Math.max(acceleration.up, acceleration.left, acceleration.down, acceleration.right);
 			if(speed < zoomIn && scale !== scaleIn) {
 				scale = scaleIn;
-				tw.to({x: scale, y: scale}, 1800).start();
+				tw.to({
+					x: scale,
+					y: scale
+				}, 1800).start();
 			} else if(speed > zoomOut && scale !== scaleOut) {
 				scale = scaleOut;
-				tw.to({x: scale, y: scale}, 1800).start();
+				tw.to({
+					x: scale,
+					y: scale
+				}, 1800).start();
 			}
 
 			if(stage.scale.x !== scale) {
