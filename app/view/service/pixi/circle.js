@@ -23,6 +23,7 @@ define([
 		this.clear();
 		this.beginFill(this.color);
 		this.drawCircle(0, 0, this.radius);
+		this.endFill();
 	};
 
 	/**
