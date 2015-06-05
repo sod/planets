@@ -1,7 +1,7 @@
 define(function() {
 	/**
 	 * @param {PIXI.Container|Container} stage
-	 * @param {PIXI.Container|Container} entity
+	 * @param {PIXI.Container|Container|Circle} entity
 	 * @constructor
 	 */
 	function CameraFollow(stage, entity) {
