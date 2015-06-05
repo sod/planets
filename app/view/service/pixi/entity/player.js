@@ -1,7 +1,7 @@
 define([
 	'PIXI',
 	'pixi/text',
-	'pixi/circle',
+	'pixi/circle'
 ], function(PIXI, text, Circle) {
 
 	/**
@@ -19,7 +19,7 @@ define([
 		this.x = x;
 		this.y = y;
 		this.setName = name.setText;
-	};
+	}
 
 	Player.prototype = Object.create(Circle.prototype);
 	Player.prototype.constructor = Player;

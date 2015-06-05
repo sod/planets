@@ -21,14 +21,14 @@ define([
 		 */
 		this.tick = function CameraZoomTick() {
 			var time = PIXI.ticker.shared.lastTime;
-			var speed = Math.max(acceleration.up, acceleration.left, acceleration.down, acceleration.right);
-			if(speed < zoomIn && scale !== scaleIn) {
+			var velocity = acceleration.getVelocity();
+			if(velocity < zoomIn && scale !== scaleIn) {
 				scale = scaleIn;
 				tw.to({
 					x: scale,
 					y: scale
 				}, 1800).start();
-			} else if(speed > zoomOut && scale !== scaleOut) {
+			} else if(velocity > zoomOut && scale !== scaleOut) {
 				scale = scaleOut;
 				tw.to({
 					x: scale,
