@@ -8,8 +8,8 @@ define(['PIXI'], function(PIXI) {
 		textEntity.style.fill = 'white';
 		textEntity.style.dropShadow = true;
 		textEntity.style.dropShadowDistance = 1;
+		textEntity.style.dropShadowColor = '#444444';
 		textEntity.resolution = 2;
-		window.text = textEntity;
 
 		/**
 		 * @param {String}  text
