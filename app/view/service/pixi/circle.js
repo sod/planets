@@ -1,36 +1,44 @@
-define(['PIXI'], function(PIXI) {
-	var noop = function() {}
+define([
+	'PIXI',
+	'pixi/ticker'
+], function(PIXI, ticker) {
 
+	function draw() {
+		this.clear();
+		this.beginFill(this.color);
+		this.drawCircle(0, 0, this.radius);
+	};
+
+	/**
+	 * @extends PIXI.Graphics
+	 * @constructor
+	 */
 	function Circle() {
-		var instance = this;
+		PIXI.Graphics.call(this);
 
-		var graphics = this.graphics = new PIXI.Graphics();
-		var color = 0x000000;
-		var radius = 0;
+		this.color = 0x000000;
+		this.radius = 0;
 
-		var draw = function() {
-			graphics.clear();
-			graphics.beginFill(color);
-			graphics.drawCircle(0, 0, radius);
-			instance.draw = noop;
+		/**
+		 * set color and schedule render on next tick
+		 * @param {Number|Hex} color
+		 */
+		this.setColor = function(color) {
+			this.color = color;
+			ticker.addOnce(draw, this);
 		};
 
-		this.draw = draw;
-
-		this.setColor = function($color) {
-			if(color !== $color) {
-				color = $color;
-				instance.draw = draw;
-			}
-		};
-
-		this.setRadius = function($radius) {
-			if(radius !== $radius) {
-				radius = $radius;
-				instance.draw = draw;
-			}
+		/**
+		 * set radius and schedule render on next tick
+		 * @param {Number} radius
+		 */
+		this.setRadius = function(radius) {
+			this.radius = radius;
+			ticker.addOnce(draw, this);
 		};
 	}
+
+	Circle.prototype = PIXI.Graphics.prototype;
 
 	return Circle;
 });

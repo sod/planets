@@ -7,32 +7,21 @@ define([
 	var player = {};
 
 	player.create = function() {
-		var playerEntity = new PIXI.Container();
-		var volume = playerEntity.volume = new Volume(0, 1, 500);
-
-		playerEntity.x = (Math.random() * 500) + 100;
-		playerEntity.y = (Math.random() * 500) + 100;
-
-		var name = text.getCentered();
 		var circle = new Circle();
+		var name = text.getCentered();
 
-		playerEntity.setColor = circle.setColor;
-		playerEntity.setRadius = volume.setRadius;
-		playerEntity.setName = name.setText;
-		playerEntity.destroy = function() {
-			playerEntity.destroyed = true;
-			playerEntity.parent.removeChild(playerEntity);
+		circle.x = (Math.random() * 500) + 100;
+		circle.y = (Math.random() * 500) + 100;
+
+		circle.setName = name.setText;
+		circle.destroy = function() {
+			circle.destroyed = true;
+			circle.parent.removeChild(circle);
 		};
 
-		circle.graphics.addChild(name);
-		playerEntity.addChild(circle.graphics);
+		circle.addChild(name);
 
-		playerEntity.tick = function PlayerEntityTick() {
-			circle.setRadius(volume.radius);
-			circle.draw();
-		};
-
-		return playerEntity;
+		return circle;
 	};
 
 	return player;
