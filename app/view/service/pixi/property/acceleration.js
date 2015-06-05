@@ -19,20 +19,21 @@ define(function() {
 		/**
 		 * increase acceleration
 		 * @param {'left'|'up'|'right'|'down'} direction
-		 * @param {Number} [multiplier=1]
+		 * @param {Number} multiplier
 		 */
 		this.increase = function(direction, multiplier) {
-			instance[direction] = Math.min((instance[direction] + steps * (multiplier || 1)), max);
+			instance[direction] = Math.min((instance[direction] + steps * multiplier), max);
 		};
 
 		/**
 		 * decrease acceleration
+		 * @param {Number} multiplier
 		 */
-		this.decrease = function() {
-			instance.left = Math.max(instance.left - steps, 0);
-			instance.up = Math.max(instance.up - steps, 0);
-			instance.right = Math.max(instance.right - steps, 0);
-			instance.down = Math.max(instance.down - steps, 0);
+		this.decrease = function(multiplier) {
+			instance.left = Math.max(instance.left - steps * multiplier, 0);
+			instance.up = Math.max(instance.up - steps * multiplier, 0);
+			instance.right = Math.max(instance.right - steps * multiplier, 0);
+			instance.down = Math.max(instance.down - steps * multiplier, 0);
 		};
 
 		this.getX = function() {
