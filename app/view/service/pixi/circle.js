@@ -3,42 +3,45 @@ define([
 	'pixi/ticker'
 ], function(PIXI, ticker) {
 
-	function draw() {
+	/**
+	 * @param {Number} radius
+	 *
+	 * @extends Graphics
+	 * @constructor
+	 */
+	function Circle(radius) {
+		PIXI.Graphics.call(this);
+
+		this.color = 0x000000;
+		this.setRadius(radius);
+	}
+
+	Circle.prototype = Object.create(PIXI.Graphics.prototype);
+	Circle.prototype.constructor = Circle;
+
+	Circle.prototype.redraw = function() {
 		this.clear();
 		this.beginFill(this.color);
 		this.drawCircle(0, 0, this.radius);
 	};
 
 	/**
-	 * @extends PIXI.Graphics
-	 * @constructor
+	 * set color and schedule render on next tick
+	 * @param {Number|Hex} color
 	 */
-	function Circle() {
-		PIXI.Graphics.call(this);
+	Circle.prototype.setColor = function(color) {
+		this.color = color;
+		ticker.addOnce(this.redraw, this);
+	};
 
-		this.color = 0x000000;
-		this.radius = 0;
-
-		/**
-		 * set color and schedule render on next tick
-		 * @param {Number|Hex} color
-		 */
-		this.setColor = function(color) {
-			this.color = color;
-			ticker.addOnce(draw, this);
-		};
-
-		/**
-		 * set radius and schedule render on next tick
-		 * @param {Number} radius
-		 */
-		this.setRadius = function(radius) {
-			this.radius = radius;
-			ticker.addOnce(draw, this);
-		};
-	}
-
-	Circle.prototype = PIXI.Graphics.prototype;
+	/**
+	 * set radius and schedule render on next tick
+	 * @param {Number} radius
+	 */
+	Circle.prototype.setRadius = function(radius) {
+		this.radius = radius;
+		ticker.addOnce(this.redraw, this);
+	};
 
 	return Circle;
 });

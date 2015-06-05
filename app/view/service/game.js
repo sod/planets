@@ -19,7 +19,7 @@ define([
 	'pixi/behaviour/camera/zoom',
 	'pixi/manager/collision',
 	'pixi/ticker'
-], function(PIXI, TWEEN, debug, playerEntity, particleEntity, InputByKeyboard, CameraFollow, CameraZoom, CollisionManager, ticker) {
+], function(PIXI, TWEEN, debug, Player, Particle, InputByKeyboard, CameraFollow, CameraZoom, CollisionManager, ticker) {
 
 	/**
 	 * @returns {HTMLElement}
@@ -48,6 +48,14 @@ define([
 		canvas.pivot.y = -(rects.height / 2);
 	}
 
+	/**
+	 * @param {number} scatter
+	 * @returns {number}
+	 */
+	function getRandomPosition(scatter) {
+		return (Math.random() * scatter) + 100;
+	}
+
 	function start() {
 		var renderer = new PIXI.autoDetectRenderer(0, 0, {
 			backgroundColor: 0xEEEEEE,
@@ -64,28 +72,22 @@ define([
 		stage.addChild(particles);
 
 		// add player
-		var player = playerEntity.create();
+		var player = new Player(getRandomPosition(500), getRandomPosition(500), 100);
 		player.setColor(0x0074D9);
-		player.setRadius(100);
 		player.setName('Player');
 		players.addChild(player);
 
 		// add enemies for testing
 		Array.apply(null, Array(100)).forEach(function(number, index) {
-			var enemy = playerEntity.create();
+			var enemy = new Player(81 * index, getRandomPosition(500), 40);
 			enemy.setColor(0xFF4136);
-			enemy.setRadius(35);
-			enemy.x = 71 * index;
 			enemy.setName('Enemy ' + (index + 1));
 			players.addChild(enemy);
 		});
 
 		// add particles for testing
 		Array.apply(null, Array(1000)).forEach(function(number, index) {
-			var particle = particleEntity.create();
-			//particle.setColor(0x000000);
-			//particle.setRadius(3);
-			particle.x = 3.5 * index;
+			var particle = new Particle(21 * index, getRandomPosition(5000), 10);
 			particles.addChild(particle);
 		});
 

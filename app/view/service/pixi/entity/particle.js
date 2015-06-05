@@ -1,30 +1,36 @@
 define([
-	'PIXI',
-	'pixi/circle',
-], function(PIXI, Circle) {
-	var particle = {};
+	'PIXI'
+], function(PIXI) {
 
-	particle.create = function() {
-		var circle = new PIXI.Sprite(PIXI.loader.resources.particle.texture);
-		circle.anchor.x = circle.anchor.y = .5;
+	/**
+	 * @param {Number} x
+	 * @param {Number} y
+	 * @param {Number} radius
+	 *
+	 * @constructor
+	 * @extends Sprite
+	 */
+	function Particle(x, y, radius) {
+		PIXI.Sprite.call(this, PIXI.loader.resources.particle.texture);
 
-		circle.setRadius = function(radius) {
-			circle.radius = radius;
-			circle.width = circle.height = radius * 2;
-		};
+		this.anchor.x = this.anchor.y = .5;
+		this.x = x;
+		this.y = y;
+		this.setRadius(radius);
+	}
 
-		circle.setRadius(10);
+	Particle.prototype = Object.create(PIXI.Sprite.prototype);
+	Particle.prototype.constructor = Particle;
 
-		circle.x = (Math.random() * 5000) + 100;
-		circle.y = (Math.random() * 5000) + 100;
-
-		circle.destroy = function() {
-			circle.destroyed = true;
-			circle.parent.removeChild(circle);
-		};
-
-		return circle;
+	Particle.prototype.setRadius = function(radius) {
+		this.radius = radius;
+		this.width = this.height = radius * 2;
 	};
 
-	return particle;
+	Particle.prototype.destroy = function() {
+		this.destroyed = true;
+		this.parent.removeChild(this);
+	};
+
+	return Particle;
 });

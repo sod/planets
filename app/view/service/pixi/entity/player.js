@@ -3,25 +3,31 @@ define([
 	'pixi/text',
 	'pixi/circle',
 ], function(PIXI, text, Circle) {
-	var player = {};
 
-	player.create = function() {
-		var circle = new Circle();
+	/**
+	 * @param {Number} x
+	 * @param {Number} y
+	 * @param {Number} radius
+	 *
+	 * @constructor
+	 * @extends Circle
+	 */
+	function Player(x, y, radius) {
+		Circle.call(this, radius);
 		var name = text.getCentered();
-
-		circle.x = (Math.random() * 500) + 100;
-		circle.y = (Math.random() * 500) + 100;
-
-		circle.setName = name.setText;
-		circle.destroy = function() {
-			circle.destroyed = true;
-			circle.parent.removeChild(circle);
-		};
-
-		circle.addChild(name);
-
-		return circle;
+		this.addChild(name);
+		this.x = x;
+		this.y = y;
+		this.setName = name.setText;
 	};
 
-	return player;
+	Player.prototype = Object.create(Circle.prototype);
+	Player.prototype.constructor = Player;
+
+	Player.prototype.destroy = function() {
+		this.destroyed = true;
+		this.parent.removeChild(this);
+	};
+
+	return Player;
 });
