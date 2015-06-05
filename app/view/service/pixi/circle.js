@@ -14,6 +14,7 @@ define([
 
 		this.color = 0x000000;
 		this.setRadius(radius);
+		this.awaitingRedraw = false;
 	}
 
 	Circle.prototype = Object.create(PIXI.Graphics.prototype);
@@ -24,6 +25,18 @@ define([
 		this.beginFill(this.color);
 		this.drawCircle(0, 0, this.radius);
 		this.endFill();
+		this.awaitingRedraw = false;
+	};
+
+	/**
+	 * schedule a redraw - prevent multiple draws in a single tick as of concurrent colisions
+	 */
+	Circle.prototype.scheduleRedraw = function() {
+		if(!this.awaitingRedraw) {
+			this.awaitingRedraw = true;
+			// bind(this) instead of addOnce(fn, this): generate unique function via bind or addOnce would reject other circles
+			ticker.addOnce(this.redraw.bind(this));
+		}
 	};
 
 	/**
@@ -32,7 +45,7 @@ define([
 	 */
 	Circle.prototype.setColor = function(color) {
 		this.color = color;
-		ticker.addOnce(this.redraw, this);
+		this.scheduleRedraw();
 	};
 
 	/**
@@ -41,7 +54,7 @@ define([
 	 */
 	Circle.prototype.setRadius = function(radius) {
 		this.radius = radius;
-		ticker.addOnce(this.redraw, this);
+		this.scheduleRedraw();
 	};
 
 	return Circle;
