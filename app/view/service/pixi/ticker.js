@@ -34,10 +34,10 @@ define([
 		var executeEveryMs = (1000 / timesPerSecond);
 		fn = getTickerFn(fn);
 
-		add(function(time) {
+		add(function(deltaTime) {
 			if((ticker.lastTime - lastExecutionTime) > executeEveryMs) {
 				lastExecutionTime = ticker.lastTime;
-				fn.call(context || this);
+				fn.call(context || this, deltaTime);
 			}
 		});
 	};

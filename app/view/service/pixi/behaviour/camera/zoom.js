@@ -1,7 +1,7 @@
 define([
-	'TWEEN',
-	'pixi/ticker'
-], function(TWEEN, ticker) {
+	'PIXI',
+	'TWEEN'
+], function(PIXI, TWEEN) {
 	/**
 	 * @param {PIXI.Container|Container} stage
 	 * @param {Acceleration} acceleration
@@ -9,9 +9,9 @@ define([
 	 */
 	function CameraZoom(stage, acceleration) {
 
-		var zoomOut = acceleration.max * .4;
-		var zoomIn = acceleration.max * .2;
-		var scaleOut = .6;
+		var zoomOut = acceleration.max * 0.4;
+		var zoomIn = acceleration.max * 0.2;
+		var scaleOut = 0.6;
 		var scaleIn = 1;
 		var scale = 0;
 		var tw = (new TWEEN.Tween(stage.scale)).easing(TWEEN.Easing.Cubic.InOut);

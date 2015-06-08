@@ -7,7 +7,7 @@ define(function() {
 	function CameraFollow(stage, entity) {
 
 		var catchup = 5;
-		var speed = .01;
+		var speed = 0.01;
 
 		stage.pivot.x = entity.x;
 		stage.pivot.y = entity.y;
@@ -24,10 +24,10 @@ define(function() {
 			var moveY;
 
 			if(diffAbsX > catchup || diffAbsY > catchup) {
-				moveX = speed * (diffX > 0 ? -1 : 1) * Math.pow((diffAbsX + catchup) * .4, 2);
+				moveX = speed * (diffX > 0 ? -1 : 1) * Math.pow((diffAbsX + catchup) * 0.4, 2);
 				stage.pivot.x += moveX;
 
-				moveY = speed * (diffY > 0 ? -1 : 1) * Math.pow((diffAbsY + catchup) * .4, 2);
+				moveY = speed * (diffY > 0 ? -1 : 1) * Math.pow((diffAbsY + catchup) * 0.4, 2);
 				stage.pivot.y += moveY;
 			}
 		};

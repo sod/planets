@@ -1,6 +1,6 @@
 define([
 	'quadtree'
-], function(/*quadtree-js not amd compliant*/nil) {
+], function(/*quadtree-js not amd compliant*/) {
 	var concat = Array.prototype.concat;
 
 	/**
@@ -50,7 +50,7 @@ define([
 			var areaWinner = Math.PI * Math.pow(destinationRadius, 2);
 			var areaLoser = Math.PI * Math.pow(sourceRadius, 2);
 			var areaCoefficient = areaLoser / areaWinner;
-			return radiusCrossover * areaCoefficient
+			return radiusCrossover * areaCoefficient;
 		};
 
 		/**

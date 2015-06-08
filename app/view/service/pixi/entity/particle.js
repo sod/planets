@@ -15,7 +15,7 @@ define([
 	function Particle(x, y, radius) {
 		PIXI.Sprite.call(this, PIXI.loader.resources.particle.texture);
 
-		this.anchor.x = this.anchor.y = .5;
+		this.anchor.x = this.anchor.y = 0.5;
 		this.x = x;
 		this.y = y;
 		this.setRadius(radius);
