@@ -1,16 +1,12 @@
 define(function() {
-	Acceleration.directions = [
-		'left',
-		'up',
-		'right',
-		'down'
+	Acceleration.coords = [
+		'x',
+		'y'
 	];
 
 	function Acceleration(max, steps) {
-		this.left = 0;
-		this.up = 0;
-		this.right = 0;
-		this.down = 0;
+		this.x = 0;
+		this.y = 0;
 
 		this.steps = steps;
 		this.max = max;
@@ -21,8 +17,29 @@ define(function() {
 	 * @param {'left'|'up'|'right'|'down'} direction
 	 * @param {Number} multiplier
 	 */
-	Acceleration.prototype.increase = function(direction, multiplier) {
-		this[direction] = Math.min((this[direction] + this.steps * multiplier), this.max);
+	//Acceleration.prototype.increase = function(direction, multiplier) {
+	//	this[direction] = Math.min((this[direction] + this.steps * multiplier), this.max);
+	//};
+
+	Acceleration.prototype.enforceBoundaries = function() {
+		var instance = this;
+		Acceleration.coords.forEach(function(coord) {
+			if(Math.abs(instance[coord]) > instance.max) {
+				instance[coord] = instance[coord] < 0 ? -instance.max : instance.max;
+			}
+		});
+	};
+
+	/**
+	 * @param {Number} deltaY
+	 * @param {Number} deltaX
+	 * @param {Number} multiplier
+	 */
+	Acceleration.prototype.increaseByDelta = function(deltaY, deltaX, multiplier) {
+		var normalize = Math.abs(Math.abs(deltaX) > Math.abs(deltaY) ? deltaX : deltaY);
+		this.x += deltaX / normalize * (multiplier || 1);
+		this.y += deltaY / normalize * (multiplier || 1);
+		this.enforceBoundaries();
 	};
 
 	/**
@@ -30,31 +47,22 @@ define(function() {
 	 * @param {Number} multiplier
 	 */
 	Acceleration.prototype.decrease = function(multiplier) {
-		this.left = Math.max(this.left - this.steps * multiplier, 0);
-		this.up = Math.max(this.up - this.steps * multiplier, 0);
-		this.right = Math.max(this.right - this.steps * multiplier, 0);
-		this.down = Math.max(this.down - this.steps * multiplier, 0);
+		var steps = this.steps * multiplier;
+		var instance = this;
+		Acceleration.coords.forEach(function(coord) {
+			if(Math.abs(this[coord]) < steps) {
+				instance[coord] = 0;
+			} else {
+				instance[coord] = instance[coord] - ((instance[coord] < 0 ? -1 : +1) * steps);
+			}
+		});
 	};
 
 	/**
 	 * @returns {number} - highest movement direction
 	 */
 	Acceleration.prototype.getVelocity = function() {
-		return Math.max(this.left, this.up, this.right, this.down);
-	};
-
-	/**
-	 * @returns {number} - horizontal movement
-	 */
-	Acceleration.prototype.getX = function() {
-		return (this.left * -1) + this.right;
-	};
-
-	/**
-	 * @returns {number} - vertical movement
-	 */
-	Acceleration.prototype.getY = function() {
-		return (this.up * -1) + this.down;
+		return Math.max(Math.abs(this.x), Math.abs(this.y));
 	};
 
 	return Acceleration;
