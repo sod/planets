@@ -18,11 +18,12 @@ define([
 	'pixi/entity/background',
 	'pixi/behaviour/background/parallax',
 	'pixi/behaviour/controllable/byKeyboard',
+	'pixi/behaviour/controllable/byMouse',
 	'pixi/behaviour/camera/follow',
 	'pixi/behaviour/camera/zoom',
 	'pixi/manager/collision',
 	'pixi/ticker'
-], function(PIXI, TWEEN, debug, renderer, Player, Particle, Background, Parallax, InputByKeyboard, CameraFollow, CameraZoom, CollisionManager, ticker) {
+], function(PIXI, TWEEN, debug, renderer, Player, Particle, Background, Parallax, InputByKeyboard, InputByMouse, CameraFollow, CameraZoom, CollisionManager, ticker) {
 
 	/**
 	 * @param {number} scatter
@@ -57,6 +58,7 @@ define([
 
 		// add behaviour
 		ticker.add(new InputByKeyboard(player));
+		//ticker.add(new InputByMouse(player));
 		ticker.add(new CameraFollow(stage, player));
 		ticker.add(new CameraZoom(stage, player.acceleration));
 
@@ -72,7 +74,7 @@ define([
 		});
 
 		// add fake particles
-		Array.apply(null, Array(5000)).forEach(function(number, index) {
+		Array.apply(null, Array(500)).forEach(function(number, index) {
 			var particle = new Particle(21 * index, getRandomPosition(5000), 10);
 			particles.addChild(particle);
 		});

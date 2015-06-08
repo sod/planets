@@ -8,14 +8,14 @@ define([
 		this.tick = function InputByKeyboardTick(deltaTime) {
 			deltaTime = Math.round(deltaTime);
 			acceleration.decrease(deltaTime);
-			Acceleration.directions.forEach(function(key) {
-				if(keyboard.state[key]) {
-					acceleration.increase(key, 2 * deltaTime);
-				}
-			});
+			var deltaX = -keyboard.state.left + keyboard.state.right;
+			var deltaY = -keyboard.state.up + keyboard.state.down;
+			if(deltaX || deltaY) {
+				acceleration.increaseByDelta(deltaY, deltaX, 2 * deltaTime * 0.02);
+			}
 
-			entity.x += acceleration.getX() * deltaTime;
-			entity.y += acceleration.getY() * deltaTime;
+			entity.x += acceleration.x * deltaTime;
+			entity.y += acceleration.y * deltaTime;
 		};
 	}
 

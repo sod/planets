@@ -9,11 +9,9 @@ define(function() {
 	var clicks = [];
 
 	mouse.getClicks = function() {
-		return clicks.slice();
-	};
-
-	mouse.emptyClicks = function() {
+		var copy = clicks.concat();
 		clicks.length = 0;
+		return copy;
 	};
 
 	var mousedown = function(event) {

@@ -3,8 +3,7 @@ define([
 	'service/event/resize'
 ], function(PIXI, resize) {
 	var domContainer = document.body;
-	var renderer = new PIXI.autoDetectRenderer(0, 0, {
-		backgroundColor: 0xEEEEEE,
+	var renderer = PIXI.autoDetectRenderer(0, 0, {
 		antialias: true
 	});
 
