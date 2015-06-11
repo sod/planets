@@ -1,10 +1,13 @@
-requirejs.config({
+require.config({
+	shim: {
+		Quadtree: {
+			exports: 'Quadtree'
+		},
+	},
 	paths: {
-		PIXI: '/pixi.js/bin/pixi',
-		TWEEN: '/tweenjs/src/Tween',
-		quadtree: '/quadtree-js/quadtree',
-		pixi: '/service/pixi',
-		service: '/service'
+		PIXI: '/vendor/pixi.js/bin/pixi',
+		TWEEN: '/vendor/tweenjs/src/Tween',
+		Quadtree: '/vendor/quadtree-js/quadtree'
 	}
 });
 

@@ -1,6 +1,6 @@
 define([
-	'quadtree'
-], function(/*quadtree-js not amd compliant*/) {
+	'Quadtree'
+], function(Quadtree) {
 	var concat = Array.prototype.concat;
 
 	/**

@@ -10,18 +10,14 @@ define([
 
 	/**
 	 * @param {Function|{tick: Function}} fn
-	 * @returns {Function}
-	 */
-	var getTickerFn = function(fn) {
-		return debug.measure(typeof fn.tick === 'function' ? fn.tick : fn);
-	};
-
-	/**
-	 * @param {Function|{tick: Function}} fn
 	 * @param {*} [context=this]
 	 */
 	ticker.add = function(fn, context) {
-		add(getTickerFn(fn), context);
+		if(fn && fn.tick) {
+			add(debug.measure(fn.tick), context || fn);
+			return;
+		}
+		add(debug.measure(fn), context);
 	};
 
 	/**
@@ -32,7 +28,7 @@ define([
 	ticker.addPerSecond = function(timesPerSecond, fn, context) {
 		var lastExecutionTime = -1;
 		var executeEveryMs = (1000 / timesPerSecond);
-		fn = getTickerFn(fn);
+		fn = fn && fn.tick ? fn.tick : fn;
 
 		add(function(deltaTime) {
 			if((ticker.lastTime - lastExecutionTime) > executeEveryMs) {
